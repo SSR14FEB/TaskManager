@@ -11,7 +11,7 @@ router.route("/register")
 }]),register)
 
 router.post("/login",login)
-router.post("/logout",logout)
+router.route("/logout").post(authentication,logout)
 
 router.route("/profile")
 .get(authentication,profile)
