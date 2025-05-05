@@ -1,5 +1,6 @@
 import { mongoose, Schema } from "mongoose";
-
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
 const userSchema = new Schema(
     {
         name: {
@@ -11,12 +12,6 @@ const userSchema = new Schema(
             unique: true,
             required: true,
         },
-        password: {
-            type: String,
-            unique: true,
-            required: true,
-            default: null,
-        },
         profileImageUrl: {
             type: String,
             required: true,
@@ -27,6 +22,18 @@ const userSchema = new Schema(
             enum: ["admin", "member"],
             default: "member",
         },
+        password: {
+            type: String,
+            unique: true,
+            required: true,
+            default: null,
+        },
+        accessToken:{
+            type:String,
+        },
+        refreshToken:{
+            type:String,
+        }
     },
     { timestamps: true }
 );
@@ -63,4 +70,4 @@ userSchema.method.generateRefreshToken = function () {
     );
 };
 
-export const User = mongoose.model("User", userSchema);
+export  const User = mongoose.model("User", userSchema);

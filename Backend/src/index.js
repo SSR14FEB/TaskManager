@@ -1,4 +1,4 @@
-import { connection } from "./db_conenction/index.js"
+import { connection } from "./database/index.js"
 import expressApp from "./app.js"
 import dotenv from "dotenv"
 dotenv.config({

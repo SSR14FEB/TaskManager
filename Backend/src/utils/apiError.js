@@ -1,14 +1,14 @@
 class apiError extends Error {
     constructor(
-        massage = "something went wrong",
+        statuscode,
+        message = "something went wrong",
         stack = "",
-        statuscode = "500",
         error = []
     ) {
-        super(massage);
-        this.message = massage;
-        this.stack = stack;
+        super(message);
         this.statuscode = statuscode;
+        this.message = message;
+        this.stack = stack;
         this.error = error;
         this.success = false;
         this.data = null;
@@ -18,3 +18,5 @@ class apiError extends Error {
         } else Error.captureStackTrace(this, this.constructor);
     }
 }
+
+export {apiError}
