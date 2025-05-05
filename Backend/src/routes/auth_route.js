@@ -1,6 +1,7 @@
 import {Router} from "express"
 import { upload } from "../middleware/multer_middleware.js"
-import { register } from "../controllers/authControllers.js"
+import { register,login,logout,profile,updateProfile } from "../controllers/authControllers.js"
+import { authentication } from "../middleware/jwt_middleware.js"
 const router = Router()
 
 router.route("/register")
@@ -9,12 +10,12 @@ router.route("/register")
     maxCount:1
 }]),register)
 
-// router.post("/login",login)
-// router.post("/logout",logout)
+router.post("/login",login)
+router.post("/logout",logout)
 
-// router.route("/profile")
-// .get(jwt,profile)
-// .patch(jwt,updateProfile)
+router.route("/profile")
+.get(authentication,profile)
+.patch(authentication,updateProfile)
 
 
 export default router
