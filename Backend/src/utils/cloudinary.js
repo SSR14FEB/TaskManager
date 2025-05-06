@@ -29,7 +29,7 @@ const removeFromCloudinary = async function (previousProfilePictureUrl) {
         const publicId = await extractPublicId(previousProfilePictureUrl);
         const successForNextStep = await cloudinary.uploader.destroy(publicId,{resource_type:"image"})
         return successForNextStep
-    } catch (error) {
+    } catch (error) { 
         console.log("error while removing previous profile image from cloudinary",error)
     }
 }
