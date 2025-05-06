@@ -1,7 +1,7 @@
 import {Router} from "express"
 import { upload } from "../middleware/multer_middleware.js"
 import { register,login,logout,profile,updateProfile } from "../controllers/authControllers.js"
-import { authentication } from "../middleware/jwt_middleware.js"
+import { authentication, roleAuthentication } from "../middleware/jwt_middleware.js"
 const router = Router()
 
 router.route("/register")
@@ -11,10 +11,10 @@ router.route("/register")
 }]),register)
 
 router.post("/login",login)
-router.route("/logout").post(authentication,logout)
+router.post("/logout",authentication,logout)
 
 router.route("/profile")
-.get(authentication,profile)
+.get(authentication,roleAuthentication,profile)
 .patch(authentication,updateProfile)
 
 

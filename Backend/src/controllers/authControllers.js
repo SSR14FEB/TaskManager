@@ -104,7 +104,14 @@ const logout = asyncHandler(async (req, res) => {
         .json(new apiResponse(200, "User logged out successfully"));
 });
 
-const profile = asyncHandler(async (req, res) => {});
+const profile = asyncHandler(async (req, res) => {
+    const admin = await User.findById(req.user._id).select("-password, -refreshToken")
+    if(!admin){
+        throw new apiError(404,"Admin not found")
+    }
+    return res.status(200)
+    .json(new apiResponse(200,"User profile fetched successfully",admin))
+});
 
 const updateProfile = asyncHandler(async (req, res) => {});
 
