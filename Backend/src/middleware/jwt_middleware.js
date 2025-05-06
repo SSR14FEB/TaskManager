@@ -5,7 +5,6 @@ import { apiError } from "../utils/apiError.js";
 
 const authentication = asyncHandler(async (req, _, next) => {
   try {
-      console.log(req);
       const token =
           req.cookies?.accessToken ||
           req.header("Authorization").replace("Bearer", "");

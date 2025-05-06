@@ -2,7 +2,8 @@ import { User } from "../models/user_model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import uploadOnCloud from "../utils/cloudinary.js";
+import {uploadOnCloudinary} from "../utils/cloudinary.js";
+import {removeFromCloudinary} from "../utils/cloudinary.js";
 
 const generateAccessTokenAndRefreshToken = async (user) => {
     try {
@@ -50,7 +51,7 @@ const register = asyncHandler(async (req, res) => {
     ) {
         localFilePath = req.files?.profileImage[0]?.path;
     }
-    const profilePicture = await uploadOnCloud(localFilePath);
+    const profilePicture = await uploadOnCloudinary(localFilePath);
     // populating user schema in to database
     const user = await User.create({
         name: name,
@@ -105,14 +106,43 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const profile = asyncHandler(async (req, res) => {
-    const admin = await User.findById(req.user._id).select("-password, -refreshToken")
-    if(!admin){
-        throw new apiError(404,"Admin not found")
+    const user = await User.findById(req.user._id).select("-password, -refreshToken")
+    if(!user){
+        throw new apiError(404,"User not found")
     }
     return res.status(200)
-    .json(new apiResponse(200,"User profile fetched successfully",admin))
+    .json(new apiResponse(200,"User profile fetched successfully",user))
 });
 
-const updateProfile = asyncHandler(async (req, res) => {});
+const updateProfile = asyncHandler(async(req,res) => {
+    const { name, email, profileImage, currentProfilePictureUrl } = req.body
+    if([name, email, profileImage].some((fields)=>fields?.trim()=="")){
+        throw new apiError(400,"All fields are required")
+    }
+    const user = await User.findById(req.user._id).select("-role, -password, -refreshToken")
+    if(!user){
+        throw new apiError(404,"User not found")
+    }
+    
+    let newProfileImage =""
+    if(!currentProfilePictureUrl){//if user change its profile picture
+        let localFilePath =""
+        if(req.files&&Array.isArray(req.files?.profileImage)&&req.files?.profileImage.length>0){
+            localFilePath = req.files?.profileImage[0]?.path
+            newProfileImage = await uploadOnCloudinary(localFilePath)
+
+            const previousProfilePictureUrl = user.profileImageUrl
+            await removeFromCloudinary(previousProfilePictureUrl)
+        }
+    }
+
+    user.name = name
+    user.email = email
+    user.profileImageUrl = newProfileImage.url||user.profileImageUrl
+    user.save({validationBeforeSave:false})
+
+    return res.status(200)
+    .json(new apiResponse(200,"Profile updated successfully"))
+    });
 
 export { register, login, logout, profile, updateProfile };

@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import {extractPublicId} from 'cloudinary-build-url'
 import fs from 'fs'
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -10,6 +11,7 @@ cloudinary.config({
 
 const uploadOnCloudinary = async function (localFilePath) {
     try {
+        console.log("i am here")
         if (!localFilePath) {
             return null;
         }
@@ -19,8 +21,18 @@ const uploadOnCloudinary = async function (localFilePath) {
         return response;
     } catch (error) {
         fs.unlinkSync(localFilePath)
-        console.log("cloudinary image upload failed", error);
     }
 };
 
-export default uploadOnCloudinary
+const removeFromCloudinary = async function (previousProfilePictureUrl) {
+    try {
+        const publicId = await extractPublicId(previousProfilePictureUrl);
+        const successForNextStep = await cloudinary.uploader.destroy(publicId,{resource_type:"image"})
+        return successForNextStep
+    } catch (error) {
+        console.log("error while removing previous profile image from cloudinary",error)
+    }
+}
+
+
+export {uploadOnCloudinary,removeFromCloudinary} 

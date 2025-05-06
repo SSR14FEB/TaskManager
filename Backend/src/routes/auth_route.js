@@ -14,8 +14,11 @@ router.post("/login",login)
 router.post("/logout",authentication,logout)
 
 router.route("/profile")
-.get(authentication,roleAuthentication,profile)
-.patch(authentication,updateProfile)
+.get(authentication,profile)
+.patch(authentication,upload.fields([{
+    name:"profileImage",
+    maxCount:1
+}]),updateProfile)
 
 
 export default router
