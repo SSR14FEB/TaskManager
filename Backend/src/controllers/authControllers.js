@@ -115,7 +115,7 @@ const profile = asyncHandler(async (req, res) => {
 });
 
 const updateProfile = asyncHandler(async(req,res) => {
-    const { name, email, profileImage, currentProfilePictureUrl } = req.body
+    const { name, email, profileImage } = req.body
     if([name, email, profileImage].some((fields)=>fields?.trim()=="")){
         throw new apiError(400,"All fields are required")
     }
@@ -125,8 +125,7 @@ const updateProfile = asyncHandler(async(req,res) => {
     }
     
     let newProfileImage =""
-    if(!currentProfilePictureUrl){//if user change its profile picture
-        let localFilePath =""
+    let localFilePath =""
         if(req.files&&Array.isArray(req.files?.profileImage)&&req.files?.profileImage.length>0){
             localFilePath = req.files?.profileImage[0]?.path
             newProfileImage = await uploadOnCloudinary(localFilePath)
@@ -134,7 +133,7 @@ const updateProfile = asyncHandler(async(req,res) => {
             const previousProfilePictureUrl = user.profileImageUrl
             await removeFromCloudinary(previousProfilePictureUrl)
         }
-    }
+    
 
     user.name = name
     user.email = email
