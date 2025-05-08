@@ -35,11 +35,14 @@ const getMembers = asyncHandler(async(req, res) => {
 })
 
 const getUserById = asyncHandler(async(req, res) => {
-   
+   const member = await User.findByID(req.params._id)
+   if(!member){
+    throw new apiError(404,"Member not found")
+   }
+   return res.status(200)
+   .json(new apiResponse(200,"Member details fetched successfully",member))
 })
 
-const deleteUser = asyncHandler(async(req, res) => { 
 
-})
 
-export { getMembers, getUserById, deleteUser }
+export { getMembers, getMemberById,}
