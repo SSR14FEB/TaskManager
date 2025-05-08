@@ -22,9 +22,9 @@ const generateAccessTokenAndRefreshToken = async (user) => {
 
 const register = asyncHandler(async (req, res) => {
     // fields
-    const { name, email, profileImage, password, role, adminCode } = req.body;
+    const { name, email, profileImage, password,adminCode } = req.body;
     if (
-        [name, email, profileImage, password, role, adminCode].some(
+        [name, email, profileImage, password].some(
             (field) => field?.trim() == ""
         )
     ) {
@@ -38,9 +38,6 @@ const register = asyncHandler(async (req, res) => {
 
     if (existingUser) {
         throw new apiError(409, "User is already existed");
-    }
-    if (adminCode !== process.env.ADMIN_INVITE_TOKEN) {
-        throw new apiError(403, "Invalid admin invite token");
     }
     // image upload on cloud using middle ware
     let localFilePath;
@@ -57,7 +54,7 @@ const register = asyncHandler(async (req, res) => {
         name: name,
         email: email,
         profileImageUrl: profilePicture?.url,
-        role: role,
+        role: adminCode == process.env.ADMIN_INVITE_TOKEN?"admin":"member", 
         password: password,
     });
     return res
