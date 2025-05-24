@@ -5,12 +5,10 @@ import { User } from "../models/user_model.js";
 import { Task } from "../models/task_model.js";
 
 const getMembers = asyncHandler(async(req, res) => {
-    console.log("i am here ")
     const members = await User.find({role:"member"}).select("-password,-refreshToken, -accessTokens")
     if(members.length==0){
         throw new apiError(404,"There is no any member")
     }
-    console.log("members",members)
     const membersWithAssignedTask = await Promise.all(members.map(async(user)=>{
         try {
             const userWithPendingTask = await Task.countDocuments({assignTo:user._id,status:"Pending"})
