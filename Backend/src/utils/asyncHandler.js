@@ -14,3 +14,4 @@ const asyncHandler = (fun) => async(req,res,next)=>{
     }
 }
 export {asyncHandler}
+
