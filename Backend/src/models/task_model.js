@@ -34,9 +34,11 @@ const taskSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-        todoCheckList: {
-            type: [todoSchema],
+        todoCheckList:{
+            type:[todoCheckList],
+            required:true
         },
+        attachments:[{type:String}],
         dueDate: {
             type: Date,
             required: true,

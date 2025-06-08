@@ -149,11 +149,10 @@ const getTask = asyncHandler(async (req, res) => {
         );
     }
 
-
     tasks = await Promise.all(
         tasks.map(async (tasks) => {
             const completedCount = tasks.todoCheckList.filter(
-                (item) => item.completed 
+                (item) => item.completed
             ).length;
             return { ...tasks._doc, completedTodoCount: completedCount };
         })
@@ -191,7 +190,17 @@ const getTask = asyncHandler(async (req, res) => {
     );
 });
 
-const getTaskById = asyncHandler(async (req, res) => {});
+const getTaskById = asyncHandler(async (req, res) => {
+    const task = await Task.find(req.params.id).populate(
+        "assignTo",
+        "name email profileImageUrl"
+    )
+    if(!task){
+        throw new apiError(404,"Task not found");    
+    }
+    return res.status(200)
+    .json(new apiResponse(200,"Task fetched successfully",task))
+});
 
 const updateTask = asyncHandler(async (req, res) => {});
 
