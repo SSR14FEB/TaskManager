@@ -89,9 +89,10 @@ const createTask = asyncHandler(async (req, res) => {
         assignTo,
         todoCheckList,
         dueDate,
-        Priority,
+        priority,
         status,
-        Progress,
+        progress,
+        attachments
     } = req.body;
 
     if (
@@ -100,9 +101,9 @@ const createTask = asyncHandler(async (req, res) => {
             description,
             createdBy,
             dueDate,
-            Priority,
+            priority,
             status,
-            Progress,
+            progress,
         ].some((field) => field?.trim() == "")
     ) {
         throw new apiError(400, "All fields are required");
@@ -118,9 +119,10 @@ const createTask = asyncHandler(async (req, res) => {
         assignTo: assignTo,
         todoCheckList: todoCheckList,
         dueDate: dueDate,
-        Priority: Priority,
+        Priority: priority,
         status: status,
-        Progress: Progress,
+        Progress: progress,
+        attachments:attachments
     });
 
     return res
@@ -202,7 +204,25 @@ const getTaskById = asyncHandler(async (req, res) => {
     .json(new apiResponse(200,"Task fetched successfully",task))
 });
 
-const updateTask = asyncHandler(async (req, res) => {});
+const updateTask = asyncHandler(async(req, res)=>{
+    const task = await Task.find(req.params._id)
+    if(!task){
+        throw new apiError(404,"Task not found")
+    }
+
+    task.title = req.body.title || task.title
+    task.description = req.body.description || task.description
+    task.assignTo = req.body.assignTo || task.assignTo
+    task.todoCheckList = req.body.todoCheckList || task.todoCheckList
+    task.dueDate = req.body.dueDate || task.dueDate
+    task.priority = req.body.priority || task.priority
+
+    const updatedTask = await task.save({validateBeforeSave:true})
+
+    return res.status(200)
+    .json(new apiResponse(200,"Task updated successfully"))
+})
+
 
 const deleteTask = asyncHandler(async (req, res) => {});
 

@@ -7,7 +7,7 @@ dotenv.config({
 
 connection()
 .then(()=>{
-   expressApp.listen(process.env.PORT,()=>{
+    expressApp.listen(process.env.PORT,()=>{
     console.log(`Express app is listing at ${process.env.PORT}`)
    })
 })
