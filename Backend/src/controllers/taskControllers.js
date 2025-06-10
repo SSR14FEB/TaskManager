@@ -3,6 +3,7 @@ import { Task } from "../models/task_model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
 
 const adminDashboard = asyncHandler(async (req, res) => {
     const adminProfile = await User.findById(req.user._id).select(
@@ -74,12 +75,91 @@ const adminDashboard = asyncHandler(async (req, res) => {
     );
 });
 
-const userDashboard = async (req, res) => {
-    const user = await User.findById(req.user._id);
+const userDashboard = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select(
+        "name email role profileImageUrl"
+    );
     if (!user) {
         throw new apiError(404, "User not found");
     }
-};
+    console.log("userID", user._id);
+    const totalTask = await Task.countDocuments({ assignTo: user._id });
+    const pendingTask = await Task.countDocuments({
+        assignTo: user._id,
+        status: "Pending",
+    });
+    const inProgressTask = await Task.countDocuments({
+        assignTo: user._id,
+        status: "In Progress",
+    });
+    const completedTask = await Task.countDocuments({
+        assignTo: user._id,
+        status: "Completed",
+    });
+    const overdueTask = await Task.countDocuments({
+        assignTo: user._id,
+        status: { $ne: "Completed" },
+        dueDate: { $lt: new Date() },
+    });
+
+    const taskStatus = ["Pending", "In Progress", "Completed"];
+
+    const taskDistributionRow = await Task.aggregate([
+        {
+            $group: {
+                _id: "$status",
+                count: {
+                    $sum: 1,
+                },
+            },
+        },
+    ]);
+
+    const taskDistribution = taskStatus.reduce((acc, status) => {
+        const formattedKey = status.replace(/\s+/g, "");
+        acc[formattedKey] =
+            taskDistributionRow.find((item) => item._id == status)?.count || 0;
+        return acc;
+    }, {});
+
+    const taskPriority = ["Low", "Medium", "High"];
+
+    const taskPriorityRow = await Task.aggregate([
+        {
+            $group: {
+                _id: "$priority",
+                count: {
+                    $sum: 1,
+                },
+            },
+        },
+    ]);
+
+    const taskPriorityLevel = taskPriority.reduce((acc, priority) => {
+        const formattedKey = priority.replace(/\s+/g, "");
+        acc[formattedKey] =
+            taskPriorityRow.find((item) => item._id == priority)?.count || 0;
+        return acc;
+    }, {});
+
+    const recentTask = await Task.find()
+        .sort({ createdAt: -1 })
+        .select("title status priority dueDate createdAt");
+
+    return res.status(200).json(
+        new apiResponse(200, "User Dashboard fetched successfully", {
+            user,
+            totalTask,
+            pendingTask,
+            inProgressTask,
+            completedTask,
+            overdueTask,
+            taskDistribution,
+            taskPriorityLevel,
+            recentTask,
+        })
+    );
+});
 
 const createTask = asyncHandler(async (req, res) => {
     const {
@@ -92,7 +172,7 @@ const createTask = asyncHandler(async (req, res) => {
         priority,
         status,
         progress,
-        attachments
+        attachments,
     } = req.body;
 
     if (
@@ -122,7 +202,7 @@ const createTask = asyncHandler(async (req, res) => {
         Priority: priority,
         status: status,
         Progress: progress,
-        attachments:attachments
+        attachments: attachments,
     });
 
     return res
@@ -145,7 +225,7 @@ const getTask = asyncHandler(async (req, res) => {
         );
     }
     if (req.user.role == "member") {
-        tasks = await Task.find({...filter, assignTo: req.user._id }).populate(
+        tasks = await Task.find({ ...filter, assignTo: req.user._id }).populate(
             "assignTo",
             "name email profileImageUrl"
         );
@@ -196,44 +276,46 @@ const getTaskById = asyncHandler(async (req, res) => {
     const task = await Task.find(req.params.id).populate(
         "assignTo",
         "name email profileImageUrl"
-    )
-    if(!task){
-        throw new apiError(404,"Task not found");    
+    );
+    if (!task) {
+        throw new apiError(404, "Task not found");
     }
-    return res.status(200)
-    .json(new apiResponse(200,"Task fetched successfully",task))
+    return res
+        .status(200)
+        .json(new apiResponse(200, "Task fetched successfully", task));
 });
 
-const updateTask = asyncHandler(async(req, res)=>{
-    const task = await Task.find(req.params._id)
-    if(!task){
-        throw new apiError(404,"Task not found")
+const updateTask = asyncHandler(async (req, res) => {
+    const task = await Task.find(req.params._id);
+    if (!task) {
+        throw new apiError(404, "Task not found");
     }
 
-    task.title = req.body.title || task.title
-    task.description = req.body.description || task.description
-    task.assignTo = req.body.assignTo || task.assignTo
-    task.todoCheckList = req.body.todoCheckList || task.todoCheckList
-    task.dueDate = req.body.dueDate || task.dueDate
-    task.priority = req.body.priority || task.priority
+    task.title = req.body.title || task.title;
+    task.description = req.body.description || task.description;
+    task.assignTo = req.body.assignTo || task.assignTo;
+    task.todoCheckList = req.body.todoCheckList || task.todoCheckList;
+    task.dueDate = req.body.dueDate || task.dueDate;
+    task.priority = req.body.priority || task.priority;
 
-    const updatedTask = await task.save({validateBeforeSave:true})
+    const updatedTask = await task.save({ validateBeforeSave: true });
 
-    return res.status(200)
-    .json(new apiResponse(200,"Task updated successfully"))
-})
-
+    return res
+        .status(200)
+        .json(new apiResponse(200, "Task updated successfully"));
+});
 
 const deleteTask = asyncHandler(async (req, res) => {
-    const task = await Task.findById(req.params._id)
-    if(!task){
-        throw new apiError(404,"Task not found")
+    const task = await Task.findById(req.params._id);
+    if (!task) {
+        throw new apiError(404, "Task not found");
     }
-    
-    await Task.findByIdAndDelete(task._id)
 
-    return res.status(200)
-    .json(new apiResponse(200,"Task deleted successfully",Task))
+    await Task.findByIdAndDelete(task._id);
+
+    return res
+        .status(200)
+        .json(new apiResponse(200, "Task deleted successfully", Task));
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {});

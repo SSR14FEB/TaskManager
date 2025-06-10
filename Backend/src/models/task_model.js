@@ -35,7 +35,7 @@ const taskSchema = new Schema(
             ref: "User",
         },
         todoCheckList:{
-            type:[todoCheckList],
+            type:["todoCheckList"],
             required:true
         },
         attachments:[{type:String}],
@@ -43,7 +43,7 @@ const taskSchema = new Schema(
             type: Date,
             required: true,
         },
-        Priority: {
+        priority: {
             type: String,
             enum: ["Low", "Medium", "High"],
             default: "Medium",
