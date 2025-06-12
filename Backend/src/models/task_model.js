@@ -53,7 +53,7 @@ const taskSchema = new Schema(
             enum: ["Pending", "In Progress", "Completed"],
             default: "Pending",
         },
-        Progress: {
+        progress: {
             type: Number,
             default: 0,
         },

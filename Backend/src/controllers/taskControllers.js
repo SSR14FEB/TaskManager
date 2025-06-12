@@ -82,7 +82,6 @@ const userDashboard = asyncHandler(async (req, res) => {
     if (!user) {
         throw new apiError(404, "User not found");
     }
-    console.log("userID", user._id);
     const totalTask = await Task.countDocuments({ assignTo: user._id });
     const pendingTask = await Task.countDocuments({
         assignTo: user._id,
@@ -105,6 +104,11 @@ const userDashboard = asyncHandler(async (req, res) => {
     const taskStatus = ["Pending", "In Progress", "Completed"];
 
     const taskDistributionRow = await Task.aggregate([
+        {
+            $match:{
+                assignTo:user._id
+            }
+        },
         {
             $group: {
                 _id: "$status",
@@ -318,9 +322,48 @@ const deleteTask = asyncHandler(async (req, res) => {
         .json(new apiResponse(200, "Task deleted successfully", Task));
 });
 
-const updateTaskStatus = asyncHandler(async (req, res) => {});
+const updateTaskStatus = asyncHandler(async (req, res) => {
+    const 
+});
 
-const updateTaskTodo = asyncHandler(async (req, res) => {});
+const updateTaskTodo = asyncHandler(async (req, res) => {
+    const task = await Task.findById(req.params._id)
+    const todoCheckList = req.body
+    if(!task){
+        throw new apiError(404,"Task not found")
+    }
+    const user = await User.findById(req.user._id)
+    if(!user){
+        throw new apiError(404,"User not found")
+    }
+
+    if(task.assignTo.include(user._id)&&user.role=="admin"){
+        throw new apiError(403,"Not authorized to update task todo")
+    }
+    task.todoCheckList = todoCheckList
+    // Auto update-progress based on checklist
+
+    const completedItem = task.todoCheckList.filter((item)=>item.completed).length
+
+    const totalItem = task.todoCheckList.length
+    task.progress = totalItem>0? Math.round((completedTask/totalItem)*100):0
+    if(task.progress==100){
+        task.status="Completed"
+    }else if(task.progress>0 && task.progress<100){
+        task.status = "In Progress"
+    }else{
+        task.status = "Pending"
+    }
+    await task.save({validateBeforeSave:true})
+    const updatedTask = await Task.findById(req.params._id).populate(
+        "assignedTo",
+        "name email profileImageUrl"
+    )
+    return res.status(200)
+    .json(new apiResponse(200,"Task checklist successfully updated",{
+        task:updateTask
+    }))
+});
 
 export {
     adminDashboard,

@@ -20,7 +20,7 @@ router.get("/:id", authentication, getTaskById);
 router.post("/create_task", authentication, adminOnly, createTask);
 router.put("/update_task/:id", authentication, updateTask);
 router.delete("/delete_task/:id", authentication, adminOnly, deleteTask);
-router.put("task_status/:id", authentication, updateTaskStatus);
-router.put("update_task_todo/:id", authentication, updateTaskTodo);
+router.put("/task_status/:id", authentication, updateTaskStatus);
+router.put("/update_task_todo/:_id", authentication, updateTaskTodo);
 
 export default router;
