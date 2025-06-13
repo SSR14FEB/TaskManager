@@ -193,7 +193,7 @@ const createTask = asyncHandler(async (req, res) => {
         throw new apiError(400, "All fields are required");
     }
 
-    if (!Array.isArray(assignTo)) {
+    if (!Array.isArray(assignTo)&&assignTo.length>0) {
         throw new apiError(400, "assignTo must be an array");
     }
     const createdTask = await Task.create({
