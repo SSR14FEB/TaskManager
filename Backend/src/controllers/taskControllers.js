@@ -323,7 +323,35 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {
-    const 
+    const task = await Task.findById(req.params._id)
+    if(!task){
+        throw new apiError(404,"Task not found")
+    }
+
+    const user = await User.findById(req.user._id)
+    if(!user){
+        throw new apiError(404,"User not found")
+    }
+    
+    const isAssigned = task.assignTo.some((userId)=>userId.toString() == user._id.toString())
+
+    if(!isAssigned && user.role!="admin"){
+        throw new apiError(403,"User is unauthorized to update task")
+    }
+
+    task.status = req.body.status||task.status
+
+    if(task.status=="Completed"){
+        task.todoCheckList.filter((task)=>task.completed=="true")
+        task.progress = 100
+    }
+
+    return res.status(200)
+    .json(new apiResponse(200,"Task status updated",{
+        task
+    }))
+
+
 });
 
 const updateTaskTodo = asyncHandler(async (req, res) => {
@@ -337,8 +365,8 @@ const updateTaskTodo = asyncHandler(async (req, res) => {
         throw new apiError(404,"User not found")
     }
 
-    if(task.assignTo.include(user._id)&&user.role=="admin"){
-        throw new apiError(403,"Not authorized to update task todo")
+    if(task.assignTo.include(user._id)&&user.role!="admin"){
+        throw new apiError(403,"User is unauthorized to update check list")
     }
     task.todoCheckList = todoCheckList
     // Auto update-progress based on checklist
