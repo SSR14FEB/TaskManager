@@ -1,10 +1,10 @@
 import React from 'react'
-
+import AuthLayout from '../../components/layouts/AuthLayout'
 function Login() {
   return (
-    <div>
-      login
-    </div>
+   <AuthLayout>
+   <h1>welcome to task manager</h1>
+   </AuthLayout>
   )
 }
 
