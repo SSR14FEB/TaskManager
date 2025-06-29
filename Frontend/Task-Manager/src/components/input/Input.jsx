@@ -17,7 +17,8 @@ function Input({ value, onChange, label, placeHolder, type }) {
           }
           placeholder={placeHolder}
           onChange={(e) => onChange(e)} required
-        ></input>
+          accept={type=="file"?"image/*":type}
+          />
         {
           type =="password"?
         <>

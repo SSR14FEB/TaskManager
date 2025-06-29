@@ -41,7 +41,7 @@ function Login() {
             placeHolder="sonu@gmail.com"
             type="email"
           />
-
+          
           <Input
             value={password}
             onChange={({ target }) => setPassword(target.value)}
@@ -62,7 +62,7 @@ function Login() {
           <div className=" text-sm w-full md:w-[90%] h-[30px] pt-3">
             <p>
               Don't have an account{" "}
-              <Link className="text-indigo-700 underline">SignUp</Link>
+              <Link to="/signup" className="text-indigo-700 underline hover:font-bold">SignUp</Link>
             </p>
           </div>
         </form>
