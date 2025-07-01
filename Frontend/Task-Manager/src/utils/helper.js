@@ -1,4 +1,4 @@
-const isValidEmail = (email) => {
+const isEmailValid = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
@@ -7,7 +7,7 @@ const isPasswordValid=(password)=>{
 }
 
 export{
-    isValidEmail,
+    isEmailValid,
     isPasswordValid
 }
   
