@@ -50,6 +50,7 @@ Organize your tasks, track progress, and stay productive — all in one sleek ap
 
 ## 📁 Project Structure
 
+```
 TaskManager/
 ├── Backend/
 │   ├── config/
@@ -67,6 +68,7 @@ TaskManager/
     │   ├── services/
     │   └── App.jsx
     └── tailwind.config.js
+```
 
 ---
 
@@ -212,15 +214,5 @@ Happy Coding! 🚀 Stay organized, stay productive.
 
 ---
 
-✅ Just replace:
-- `your.email@example.com`
-- any `your-demo-link.com` or image links
-- `your_jwt_secret` and `MONGO_URI` example
 
-Want me to also generate:
-- `.env.example`
-- `CONTRIBUTING.md`
-- Postman API collection?
-
-Let me know and I’ll create those too!
 
