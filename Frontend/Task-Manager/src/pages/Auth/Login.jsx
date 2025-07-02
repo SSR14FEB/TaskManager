@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
-import { isEmailValid, isPasswordValid } from "../../utils/helper";
+import {isEmailValid, isPasswordValid } from "../../utils/helper";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,14 +13,15 @@ function Login() {
   // this function is use to handel the form and field validation
   const handelSubmit = async (e) => {
     e.preventDefault();
-    if (!isEmailValid(email)) {
+    if(!isEmailValid(email)) {
       setError("Please enter a valid email");
       return;
     }
-    if (!isPasswordValid(password))
+    if(!isPasswordValid(password)){
       setError(
         "Password must be at least 8 characters and include a number and an uppercase letter."
       );
+    }
   };
   useEffect(() => {
     setError("");

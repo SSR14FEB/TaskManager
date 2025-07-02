@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { isEmailValid, isPasswordValid } from "../../utils/helper";
+import {
+  isEmailValid,
+  isNameValid,
+  isPasswordValid,
+  isAdminTokenValid,
+} from "../../utils/helper";
 function SignUp() {
   const [profile, setProfile] = useState("");
   const [name, setName] = useState("");
@@ -11,18 +16,31 @@ function SignUp() {
   const [imgRef, setImgRef] = useState("");
   const [administrativeToken, setAdministrativeToken] = useState("");
   const [error, setError] = useState("");
-
   const handelSubmit = async (e) => {
     e.preventDefault();
-    if(!isEmailValid(email)){
+    if (!isNameValid(name)) {
+      setError("The name should not contain any symbols.");
+    }
+    if (!isEmailValid(email)) {
       setError("Please enter a valid email");
     }
-    if(!isPasswordValid(password)){
+    if (!isPasswordValid(password)) {
       setError(
         "Password must be at least 8 characters and include a number and an uppercase letter."
       );
     }
+    if (!isAdminTokenValid(administrativeToken)) {
+      console.log(administrativeToken)
+      console.log("check",isAdminTokenValid(administrativeToken))
+      setError(
+        "Admin Token must be at least 8 digits and include only numbers."
+      );
+    }
   };
+  
+  useEffect(()=>{
+    setError(" ")
+  },[name,email,password,administrativeToken])
 
   const handelProfilePicture = (e) => {
     const img = e.target.files[0];
@@ -31,7 +49,7 @@ function SignUp() {
   };
   return (
     <AuthLayout>
-      <div className="lg:h-[70%] sm:mb-[99px]  md:h-full h-full flex flex-col justify-center">
+      <div className="lg:h-[70%] sm:mb-[99px]  md:h-full h-full flex flex-col justify-center  ">
         <h1 className="text-xl font-semibold text-black mt-2 mb-2">SingUp</h1>
         <p className="text-sm font-semibold text-slate-700 mt-2 mb-2">
           Please enter your details to register
@@ -61,14 +79,14 @@ function SignUp() {
             <div className="w-[100%] md:w-[50%]">
               <Input
                 value={name}
-                onChange={({ text }) => setName(text.value)}
+                onChange={({ target })=>setName(target.value)}
                 label="Name"
                 placeHolder="Name"
                 type="text"
               />
               <Input
                 value={email}
-                onChange={({ text }) => setEmail(text.value)}
+                onChange={({ target }) => setEmail(target.value)}
                 label="email"
                 placeHolder="Email"
                 type="email"
@@ -77,24 +95,26 @@ function SignUp() {
             <div className="w-[100%] md:w-[50%]">
               <Input
                 value={password}
-                onChange={({ text }) => setPassword(text.value)}
+                onChange={({ target }) => setPassword(target.value)}
                 label="Password"
                 placeHolder="Min 8 Character"
                 type="password"
               />
               <Input
                 value={administrativeToken}
-                onChange={({ text }) => setAdministrativeToken(text.value)}
+                onChange={({ target }) => setAdministrativeToken(target.value)}
                 label="Admin Token"
                 placeHolder="Admin Token"
                 type="password"
               />
             </div>
-          </div>
-          {error && <p className="text-wrap md:text-sm pb-2 text-red-700">{error}</p>}
+            </div>
+            {error && (
+              <p className="text-wrap md:text-sm pb-2 text-red-700">{error}</p>
+            )}
           <button
             type="submit"
-            className="w-[82%] ml-6 md:ml-0 md:w-[81%] h-[40px] rounded-sm text-lg flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white font-semibold"
+            className="w-[83%] sm:w-[87%] ml-6 md:ml-0 md:w-[81%] h-[40px] rounded-sm text-lg flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white font-semibold"
             onClick={handelSubmit}
           >
             Sing up

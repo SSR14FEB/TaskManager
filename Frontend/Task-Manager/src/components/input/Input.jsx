@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 function Input({ value, onChange, label, placeHolder, type }) {
   const [showPassword, setShowPassword] = useState(false);
-  console.log(showPassword);
   const onToggle = () => {
     setShowPassword((prev) => !prev);
   };
@@ -12,6 +11,7 @@ function Input({ value, onChange, label, placeHolder, type }) {
       <div className="inputBox">
         <input
           className="outline-none w-full h-full bg-transparent placeholder-gray-500 placeholder"
+          value={value}
           type={
             type == "password" ? (showPassword ? "text" : "password") : type
           }
