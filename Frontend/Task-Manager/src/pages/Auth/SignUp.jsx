@@ -2,19 +2,24 @@ import React, { useEffect, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import {
   isEmailValid,
   isNameValid,
   isPasswordValid,
   isAdminTokenValid,
 } from "../../utils/helper";
+import { axiosInstancesOfForm } from "../../utils/axiosInstances";
+import { API_PATHS } from "../../utils/apiPath";
+
 function SignUp() {
-  const [profile, setProfile] = useState("");
+  const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [imgRef, setImgRef] = useState("");
-  const [administrativeToken, setAdministrativeToken] = useState("");
+  const [adminCode, setAdministrativeToken] = useState("");
   const [error, setError] = useState("");
   const handelSubmit = async (e) => {
     e.preventDefault();
@@ -29,23 +34,48 @@ function SignUp() {
         "Password must be at least 8 characters and include a number and an uppercase letter."
       );
     }
-    if (!isAdminTokenValid(administrativeToken)) {
-      console.log(administrativeToken)
-      console.log("check",isAdminTokenValid(administrativeToken))
+    if (!isAdminTokenValid(adminCode)) {
       setError(
         "Admin Token must be at least 8 digits and include only numbers."
       );
     }
-  };
-  
-  useEffect(()=>{
-    setError(" ")
-  },[name,email,password,administrativeToken])
+    try {
+      const formData = new FormData();
+      console.log(profileImage)
+      formData.append("name",name);
+      formData.append("email",email);
+      formData.append("profileImage",profileImage);
+      formData.append("password",password);
+      formData.append("adminCode",adminCode);
 
-  const handelProfilePicture = (e) => {
-    const img = e.target.files[0];
-    setImgRef(URL.createObjectURL(img));
-    console.log(imgRef);
+      const response = await axiosInstancesOfForm.post(API_PATHS.AUTH.REGISTER,formData);
+      console.log(response.data);
+      const role  = response.data.data.role;
+      console.log(role)
+      if (role == "admin") {
+        navigate("/admin/dashboard");
+      } else if(role == "user"){
+        navigate("/user/dashboard");
+      }
+    } catch (error) {
+      console.log("Error while sending data from SingUp Page", error);
+    }
+  };
+
+  useEffect(() => {
+    setError(" ");
+  }, [name, email, password, adminCode]);
+
+  const handelProfileImage = (e) => {
+    try {
+      const img = e.target.files[0];
+      if (img) {
+      setProfileImage(img);
+      setImgRef(URL.createObjectURL(img));
+      }
+    } catch (error) {
+      console.log("Error file is not supported",error)
+    }
   };
   return (
     <AuthLayout>
@@ -59,14 +89,13 @@ function SignUp() {
             {/* using image ref */}
             <div
               className="border-indigo-500 border-2 h-18 w-18 rounded-full bg-center bg-cover flex items-end justify-end"
-              style={{ backgroundImage: `url(${imgRef})` }}
+              style={{ backgroundImage: `url(${imgRef})`}}
             >
               <input
                 className="hidden"
                 type="file"
                 accept="image/*"
-                value={profile}
-                onChange={handelProfilePicture}
+                onChange={handelProfileImage}
                 id="uploadPicture"
               />
               <label htmlFor="uploadPicture">
@@ -79,7 +108,7 @@ function SignUp() {
             <div className="w-[100%] md:w-[50%]">
               <Input
                 value={name}
-                onChange={({ target })=>setName(target.value)}
+                onChange={({ target }) => setName(target.value)}
                 label="Name"
                 placeHolder="Name"
                 type="text"
@@ -101,17 +130,17 @@ function SignUp() {
                 type="password"
               />
               <Input
-                value={administrativeToken}
+                value={adminCode}
                 onChange={({ target }) => setAdministrativeToken(target.value)}
                 label="Admin Token"
                 placeHolder="Admin Token"
                 type="password"
               />
             </div>
-            </div>
-            {error && (
-              <p className="text-wrap md:text-sm pb-2 text-red-700">{error}</p>
-            )}
+          </div>
+          {error && (
+            <p className="text-wrap md:text-sm pb-2 text-red-700">{error}</p>
+          )}
           <button
             type="submit"
             className="w-[83%] sm:w-[87%] ml-6 md:ml-0 md:w-[81%] h-[40px] rounded-sm text-lg flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white font-semibold"

@@ -7,7 +7,7 @@ const isPasswordValid=(password)=>{
 }
 
 const isNameValid =(name)=>{
-    return /^[A-Za-z]+$/.test(name);
+    return /^[A-Za-z]+$/.test(name.trim());
 }
 
 const isAdminTokenValid =(administrativeToken)=>{

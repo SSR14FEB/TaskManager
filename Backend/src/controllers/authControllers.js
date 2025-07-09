@@ -2,8 +2,8 @@ import { User } from "../models/user_model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import {uploadOnCloudinary} from "../utils/cloudinary.js";
-import {removeFromCloudinary} from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { removeFromCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessTokenAndRefreshToken = async (user) => {
     try {
@@ -22,7 +22,8 @@ const generateAccessTokenAndRefreshToken = async (user) => {
 
 const register = asyncHandler(async (req, res) => {
     // fields
-    const { name, email, profileImage, password,adminCode } = req.body;
+    const { name, email, password, adminCode } = req.body;
+    const profileImage = req.file?.path || null;
     if (
         [name, email, profileImage, password].some(
             (field) => field?.trim() == ""
@@ -41,12 +42,8 @@ const register = asyncHandler(async (req, res) => {
     }
     // image upload on cloud using middle ware
     let localFilePath;
-    if (
-        req.files &&
-        Array.isArray(req.files.profileImage) &&
-        req.files?.profileImage.length > 0
-    ) {
-        localFilePath = req.files?.profileImage[0]?.path;
+    if (req.file && req.file?.path) {
+        localFilePath = profileImage;
     }
     const profilePicture = await uploadOnCloudinary(localFilePath);
     // populating user schema in to database
@@ -54,7 +51,7 @@ const register = asyncHandler(async (req, res) => {
         name: name,
         email: email,
         profileImageUrl: profilePicture?.url,
-        role: adminCode == process.env.ADMIN_INVITE_TOKEN?"admin":"member", 
+        role: adminCode == process.env.ADMIN_INVITE_TOKEN ? "admin" : "member",
         password: password,
     });
     return res
@@ -92,53 +89,66 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
-   await User.findByIdAndUpdate(req.user._id,{
-    $unset:{
-        refreshToken:1
-    }
-   },{new:true})
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1,
+            },
+        },
+        { new: true }
+    );
     return res
         .status(200)
         .json(new apiResponse(200, "User logged out successfully"));
 });
 
 const profile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id).select("-password, -refreshToken")
-    if(!user){
-        throw new apiError(404,"User not found")
+    const user = await User.findById(req.user._id).select(
+        "-password, -refreshToken"
+    );
+    if (!user) {
+        throw new apiError(404, "User not found");
     }
-    return res.status(200)
-    .json(new apiResponse(200,"User profile fetched successfully",user))
+    return res
+        .status(200)
+        .json(new apiResponse(200, "User profile fetched successfully", user));
 });
 
-const updateProfile = asyncHandler(async(req,res) => {
-    const { name, email, profileImage } = req.body
-    if([name, email, profileImage].some((fields)=>fields?.trim()=="")){
-        throw new apiError(400,"All fields are required")
+const updateProfile = asyncHandler(async (req, res) => {
+    const { name, email, profileImage } = req.body;
+    if ([name, email, profileImage].some((fields) => fields?.trim() == "")) {
+        throw new apiError(400, "All fields are required");
     }
-    const user = await User.findById(req.user._id).select("-role, -password, -refreshToken")
-    if(!user){
-        throw new apiError(404,"User not found")
+    const user = await User.findById(req.user._id).select(
+        "-role, -password, -refreshToken"
+    );
+    if (!user) {
+        throw new apiError(404, "User not found");
     }
-    
-    let newProfileImage =""
-    let localFilePath =""
-        if(req.files&&Array.isArray(req.files?.profileImage)&&req.files?.profileImage.length>0){
-            localFilePath = req.files?.profileImage[0]?.path
-            newProfileImage = await uploadOnCloudinary(localFilePath)
 
-            const previousProfilePictureUrl = user.profileImageUrl
-            await removeFromCloudinary(previousProfilePictureUrl)
-        }
-    
+    let newProfileImage = "";
+    let localFilePath = "";
+    if (
+        req.files &&
+        Array.isArray(req.files?.profileImage) &&
+        req.files?.profileImage.length > 0
+    ) {
+        localFilePath = req.files?.profileImage[0]?.path;
+        newProfileImage = await uploadOnCloudinary(localFilePath);
 
-    user.name = name
-    user.email = email
-    user.profileImageUrl = newProfileImage.url||user.profileImageUrl
-    user.save({validationBeforeSave:false})
+        const previousProfilePictureUrl = user.profileImageUrl;
+        await removeFromCloudinary(previousProfilePictureUrl);
+    }
 
-    return res.status(200)
-    .json(new apiResponse(200,"Profile updated successfully"))
-    });
+    user.name = name;
+    user.email = email;
+    user.profileImageUrl = newProfileImage.url || user.profileImageUrl;
+    user.save({ validationBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new apiResponse(200, "Profile updated successfully"));
+});
 
 export { register, login, logout, profile, updateProfile };

@@ -14,7 +14,7 @@ import {
 const router = Router();
 
 router.get("/admin_dashboard", authentication, adminDashboard);
-router.get("/user_dashboard/", authentication, userDashboard);
+router.get("/user_dashboard", authentication, userDashboard);
 router.get("/", authentication, getTask);
 router.get("/:id", authentication, getTaskById);
 router.post("/create_task", authentication, adminOnly, createTask);

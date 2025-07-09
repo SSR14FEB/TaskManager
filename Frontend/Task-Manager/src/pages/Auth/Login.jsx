@@ -1,8 +1,11 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { API_PATHS } from "../../utils/apiPath";
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
-import {isEmailValid, isPasswordValid } from "../../utils/helper";
+import { isEmailValid, isPasswordValid } from "../../utils/helper";
+import axios from "axios";
+import { axiosInstances } from "../../utils/axiosInstances";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,14 +16,29 @@ function Login() {
   // this function is use to handel the form and field validation
   const handelSubmit = async (e) => {
     e.preventDefault();
-    if(!isEmailValid(email)) {
+    if (!isEmailValid(email)) {
       setError("Please enter a valid email");
       return;
     }
-    if(!isPasswordValid(password)){
+    if (!isPasswordValid(password)) {
       setError(
         "Password must be at least 8 characters and include a number and an uppercase letter."
       );
+    }
+    // api call
+    try {
+      const response = await axiosInstances.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+      const { role } = response.data.data;
+      if (role == "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
+    } catch (error) {
+      console.log("error while sending request from frontend", error);
     }
   };
   useEffect(() => {
@@ -42,7 +60,7 @@ function Login() {
             placeHolder="sonu@gmail.com"
             type="email"
           />
-          
+
           <Input
             value={password}
             onChange={({ target }) => setPassword(target.value)}
@@ -63,7 +81,12 @@ function Login() {
           <div className=" text-sm w-full md:w-[90%] h-[30px] pt-3">
             <p>
               Don't have an account{" "}
-              <Link to="/signup" className="text-indigo-700 underline hover:font-bold">SignUp</Link>
+              <Link
+                to="/signup"
+                className="text-indigo-700 underline hover:font-bold"
+              >
+                SignUp
+              </Link>
             </p>
           </div>
         </form>
