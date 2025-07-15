@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState } from "react";
 import { API_PATHS } from "../../utils/apiPath";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
 import { isEmailValid, isPasswordValid } from "../../utils/helper";
-import axios from "axios";
+import Cookies from "js-cookie";
 import { axiosInstances } from "../../utils/axiosInstances";
+import { UserContext } from "../../context/CreateContext";
+
 
 function Login() {
-  const navigate = useNavigate();
+  const {updateUser} = useContext(UserContext)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  ``;
   // this function is use to handel the form and field validation
   const handelSubmit = async (e) => {
     e.preventDefault();
@@ -31,12 +32,17 @@ function Login() {
         email,
         password,
       });
-      const { role } = response.data.data;
-      if (role == "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/user/dashboard");
+      if (response) {
+        updateUser(response.data.data);
       }
+      //   const { role } = response.data.data;
+      //   if (role == "admin") {
+      //     navigate("/admin/dashboard");
+      //   } else {
+      //     navigate("/user/dashboard");
+      //   }
+      //   const token = Cookies.get("accessToken");
+      //   console.log("token",token)
     } catch (error) {
       console.log("error while sending request from frontend", error);
     }
