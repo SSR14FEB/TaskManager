@@ -1,5 +1,6 @@
 import axios from "axios"
 import {BASE_URL} from '../utils/apiPath'
+import { useNavigate } from "react-router-dom";
 
 export const axiosInstances = axios.create({
     baseURL:BASE_URL,
@@ -25,9 +26,10 @@ axiosInstances.interceptors.response.use(
         return response
     },
     (error)=>{
+        const navigate = useNavigate();
         const errorStatus = error.response?.status;
         if(errorStatus==401){
-            window.location.href ="/login"
+            navigate("/login")
         }
         if(errorStatus==500){
             console.log("Please try again")

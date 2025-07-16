@@ -1,23 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
 import { axiosInstances } from "../utils/axiosInstances";
 import { API_PATHS } from "../utils/apiPath";
-import { UserContext } from "./CreateContext";
-import { memo } from "react";
-
- const UserProvider = ({ children }) => {
-  console.log("Provider")
+import UserContext from "./CreateContext"; 
+const UserProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUser =async () => {
       try {
         const response = await axiosInstances.get(API_PATHS.AUTH.PROFILE);
-        setUser(response);
+        setUser(response.data); // ✅ Fix here
       } catch (error) {
-        console.log(
-          "Error 500 something went wrong while fetching user data",
-          error
-        );
+        console.error("Error fetching user:", error);
       } finally {
         setLoading(false);
       }
@@ -29,11 +24,12 @@ import { memo } from "react";
     setUser(userData);
     setLoading(false);
   };
-
+  console.log(user)
   return (
-    <UserContext.Provider value={{ user, loading, updateUser }}>
+    <UserContext.Provider value={{user,loading,updateUser}}>
       {children}
     </UserContext.Provider>
   );
 };
-export default memo(UserProvider);
+
+export default UserProvider;
