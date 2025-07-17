@@ -1,16 +1,17 @@
-import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
-function PrivateRoute({allowedRoles}){
-const usersRole ={
-    "admin":()=>{
-      <Outlet/>
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+function PrivateRoute({ allowedRoles }) {
+  const usersRole = {
+    admin: () => {
+      console.log("i am in admin outlet");
+      <Outlet />;
     },
-    "user":()=>{
-      <Outlet/>
-    }
+    user: () => {
+      console.log("i am in user outlet");
+      <Outlet />;
+    },
+  };
+  return usersRole[allowedRoles]();
 }
-return(
-    usersRole[allowedRoles]()
-)}
 
-export default PrivateRoute
+export default PrivateRoute;
