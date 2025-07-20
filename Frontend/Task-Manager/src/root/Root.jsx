@@ -10,13 +10,12 @@ export const Root = () => {
     return <Outlet/>
   }
 
-  // if (!user) {
-  //   console.log("No user, redirecting...");
-  //   return <Navigate to="/login"/>;
-  // }
-
+  if (!user) {
+    console.log("No user, redirecting...");
+    return <Navigate to="/login"/>;
+  }
   return user.role === "admin" ? (
-    <Navigate to="/admin/dashboard"/>
+  <Navigate to="/admin/dashboard"/>
   ) : (
     <Navigate to="/user/dashboard"/>
   );

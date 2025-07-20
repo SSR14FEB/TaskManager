@@ -23,5 +23,5 @@
   }
 }
 .inputBox{
-  @apply  outline-slate-500 outline-1  w-[90%]  md:w-[80%] h-12 flex items-center mb-5 mt-2 px-5 rounded-sm;
+  @apply  outline-slate-500 outline-1  w-[90%]  md:w-[80%] h-12 flex items-center mb-5 mt-2 px-5 rounded-sm ;
 }

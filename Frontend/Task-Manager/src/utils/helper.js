@@ -6,9 +6,9 @@ const isPasswordValid=(password)=>{
     return /^.{8,}$/.test(password);
 }
 
-const isNameValid =(name)=>{
-    return /^[A-Za-z]+$/.test(name.trim());
-}
+const isNameValid = (name) => {
+    return /^[A-Za-z]+ [A-Za-z]+$/.test(name.trim());
+  }
 
 const isAdminTokenValid =(administrativeToken)=>{
     return /^\d{8,}$/.test(administrativeToken.trim(" "));

@@ -1,10 +1,11 @@
 import React from 'react'
-
 function Dashboard() {
   return (
-    <div>
-      dashboard
-    </div>
+    <>
+     <h1 className='text-black'>AdminDashBoard</h1>
+
+      {console.log("i am admin dashboard")}
+    </>
   )
 }
 

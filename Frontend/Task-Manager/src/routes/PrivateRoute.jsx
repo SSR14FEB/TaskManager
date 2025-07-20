@@ -4,11 +4,11 @@ function PrivateRoute({ allowedRoles }) {
   const usersRole = {
     admin: () => {
       console.log("i am in admin outlet");
-      <Outlet />;
+     return <Outlet />;
     },
     user: () => {
       console.log("i am in user outlet");
-      <Outlet />;
+      return <Outlet />;
     },
   };
   return usersRole[allowedRoles]();

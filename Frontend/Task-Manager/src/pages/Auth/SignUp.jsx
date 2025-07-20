@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import Input from "../../components/input/Input";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -11,9 +11,9 @@ import {
 } from "../../utils/helper";
 import { axiosInstancesOfForm } from "../../utils/axiosInstances";
 import { API_PATHS } from "../../utils/apiPath";
+import UserContext from "../../context/CreateContext";
 
 function SignUp() {
-  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +21,8 @@ function SignUp() {
   const [imgRef, setImgRef] = useState("");
   const [adminCode, setAdministrativeToken] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const {updateUser} = useContext(UserContext)
   const handelSubmit = async (e) => {
     e.preventDefault();
     if (!isNameValid(name)) {
@@ -49,16 +51,20 @@ function SignUp() {
       formData.append("adminCode",adminCode);
 
       const response = await axiosInstancesOfForm.post(API_PATHS.AUTH.REGISTER,formData);
+      
       console.log(response.data);
       const role  = response.data.data.role;
       console.log(role)
+      if(response){
+        updateUser(response.data.data)
+      }
       if (role == "admin") {
         navigate("/admin/dashboard");
       } else if(role == "user"){
         navigate("/user/dashboard");
       }
     } catch (error) {
-      console.log("Error while sending data from SingUp Page", error);
+      console.log("Error while sending data from SingUp Page", error.response.data);
     }
   };
 

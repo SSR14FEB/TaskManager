@@ -12,7 +12,7 @@ const UserProvider = ({ children }) => {
     const fetchUser =async () => {
       try {
         const response = await axiosInstances.get(API_PATHS.AUTH.PROFILE);
-        setUser(response.data); 
+        setUser(response.data.data); 
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -25,8 +25,8 @@ const UserProvider = ({ children }) => {
   const updateUser = (userData) => {
     setUser(userData);
     setLoading(false);
+    console.log("user",user)
   };
-  console.log(user)
   return (
     <UserContext.Provider value={{user,loading,updateUser}}>
       {children}

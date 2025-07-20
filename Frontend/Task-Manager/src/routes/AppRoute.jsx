@@ -1,5 +1,5 @@
 import { Root } from "../root/Root";
-import { Routes, Route, Router } from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
 import Login from "../pages/Auth/Login";
 import SignUp from "../pages/Auth/SignUp";
 import AdminDashboard from "../pages/Admin/Dashboard";
@@ -11,7 +11,6 @@ import UserDashboard from "../pages/users/Dashboard";
 import ViewTaskDetails from "../pages/Users/ViewTaskDetails";
 import PrivateRoute from "../routes/PrivateRoute";
 import UserProvider from "../context/UserProvider.jsx";
-
 const AppRoute = () => {
   return (
     <UserProvider>
@@ -24,6 +23,7 @@ const AppRoute = () => {
             path="/admin"
             element={<PrivateRoute allowedRoles={["admin"]} />}
           >
+            {/* outlet */}
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="task" element={<MangeTasks />} />
             <Route path="create_tasks" element={<CreateTasks />} />
@@ -34,6 +34,7 @@ const AppRoute = () => {
             path="/user"
             element={<PrivateRoute allowedRoles={["user"]} />}
           >
+            {/* outlet */}
             <Route path="dashboard" element={<UserDashboard />} />
             <Route path="my_task" element={<MyTasks />} />
             <Route path="task_details/:id" element={<ViewTaskDetails />} />
