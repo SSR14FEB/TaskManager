@@ -25,3 +25,6 @@
 .inputBox{
   @apply  outline-slate-500 outline-1  w-[90%]  md:w-[80%] h-12 flex items-center mb-5 mt-2 px-5 rounded-sm ;
 }
+.card{
+  @apply bg-white p-6 rounded-md border border-gray-200/50 shadow-md shadow-gray-100 
+}

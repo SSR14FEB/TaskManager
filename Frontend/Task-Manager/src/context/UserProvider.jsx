@@ -13,6 +13,7 @@ const UserProvider = ({ children }) => {
       try {
         const response = await axiosInstances.get(API_PATHS.AUTH.PROFILE);
         setUser(response.data.data); 
+        console.log("user",user)
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {

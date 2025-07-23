@@ -15,9 +15,7 @@ const authentication = asyncHandler(async (req, _, next) => {
           token,
           process.env.ACCESS_TOKEN_SECRET_KEY
       );
-      const user = await User.findById(decodedToken._id).select(
-          "-password, -refreshToken"
-      );
+      const user = await User.findById(decodedToken._id).select("-password -refreshToken");
       req.user = user;
       next();
   } catch (error) {
