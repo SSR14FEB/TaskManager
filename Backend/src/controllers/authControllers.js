@@ -98,7 +98,6 @@ const logout = asyncHandler(async (req, res) => {
         },
         { new: true }
     );
-    console.log(user)
     const option = {
         httpOnly: true,
         secure: true,

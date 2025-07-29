@@ -42,7 +42,7 @@ const adminDashboard = asyncHandler(async (req, res) => {
     const taskPriorityRow = await Task.aggregate([
         {
             $group: {
-                _id: "$Priority",
+                _id: "$priority",
                 count: {
                     $sum: 1,
                 },
@@ -53,10 +53,11 @@ const adminDashboard = asyncHandler(async (req, res) => {
     const taskPriority = taskPriorityLevel.reduce((acc, priority) => {
         const formattedKey = priority.replace(/\s+/g, "");
         acc[formattedKey] =
-            taskDistributionRow.find((item) => item._id == priority)?.count ||
+        taskPriorityRow.find((item) =>item._id==priority)?.count ||
             0;
         return acc;
     }, {});
+ 
     const recentTask = await Task.find()
         .sort({ createdAt: -1 })
         .select("title status priority dueDate createdAt");

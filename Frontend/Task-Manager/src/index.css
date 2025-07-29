@@ -28,3 +28,6 @@
 .card{
   @apply bg-white p-6 rounded-md border border-gray-200/50 shadow-md shadow-gray-100 
 }
+.card-btn{
+  @apply px-2 py-1 text-[12px] flex items-center text-white bg-indigo-600 rounded-md hover:bg-indigo-500 gap-2 cursor-pointer
+}
