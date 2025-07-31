@@ -40,7 +40,6 @@ function Dashboard() {
   const prepareChartData = (data) => {
     const taskDistribution = data?.taskDistribution || null;
     const taskPriority = data?.taskPriority || null;
-    console.log("taskdistribution",taskDistribution)
     const taskDistributionData = [
       { status: "Pending", count: taskDistribution?.Pending || 0 },
       { status: "In Progress", count: taskDistribution?.InProgress || 0 },
@@ -53,7 +52,6 @@ function Dashboard() {
       { priority: "High", count: taskPriority?.High || 0 },
     ];
     setBarChartData(taskPriorityLevelData)
-    console.log("pie",pieChartData)
   };
   useEffect(() => {
     getDashBoardData();
@@ -110,11 +108,12 @@ function Dashboard() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
-       
+         
             <div className="card">
               <div className="min-w-full flex items-center justify-between ">
                 <h5 className="font-medium">Task Distribution</h5>
               </div>
+              {/* data charts */}
               <CustomPiChart
               data={pieChartData}
               label="Total Balance"

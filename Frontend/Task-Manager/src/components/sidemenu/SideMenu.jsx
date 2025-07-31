@@ -42,7 +42,7 @@ function SideMenu({ activeMenu }) {
   }, [user]);
 
   return (
-    <div className="w-64 h-[calc(100vh-61px)] bg-white border-r border-gray-200/50 sticky top-0 ">
+    <div className="w-64 h-[calc(100vh-61px)]  bg-white border-r border-gray-200/50 sticky top-[61px] z-20 ">
       <div className=" flex flex-col items-center justify-center mb-7 pt-5">
         <div className="relative">
           <img
