@@ -15,6 +15,7 @@ function SideMenu({ activeMenu }) {
       handelLogOut();
       return;
     } else {
+      console.log(route)
       navigate(route);
     }
   };

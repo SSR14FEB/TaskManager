@@ -11,7 +11,7 @@ export const SIDE_MENU_ADMIN_DATA = [
     id: "01",
     label: "Dashboard",
     icon: LuLayoutDashboard,
-    path: "admin/dashboard",
+    path: "/admin/dashboard",
   },
   {
     id: "02",
@@ -23,7 +23,7 @@ export const SIDE_MENU_ADMIN_DATA = [
     id: "03",
     label: "Create Task",
     icon: LuSquarePlus,
-    path: "/admin/create_task",
+    path: "/admin/create_tasks",
   },
   {
     id: "04",
@@ -59,3 +59,13 @@ export const SIDE_MENU_USER_DATA = [
     path: "/logout",
   },
 ];
+
+export const PRIORITY_DATA =[
+  {label:"LOW",value:"LOW"},
+  {label:"MEDIUM",value:"MEDIUM"},
+  {label:"HIGH",value:"HIGH"}
+]
+
+export const STATUS_DATA=[
+  
+]
