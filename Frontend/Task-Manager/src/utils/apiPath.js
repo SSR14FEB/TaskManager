@@ -9,12 +9,12 @@ export const API_PATHS = {
   },
 
   USER:{
-    GET_ALL_USER: "/api/users", // TO GET ALL USERS
+    GET_ALL_USER: "/api/user/", // TO GET ALL USERS
     DElETE_USER: (userId) => {  // TO DELETE USER BY ID
     return `api/users/${userId}`;
     },
 
-    CREATE_USERS: "api/users", // TO CREATE USER
+    CREATE_USERS: "api/user/", // TO CREATE USER
     GET_USER_BY_ID: (userId) => { // TO GET ID BY USER
       return `api/users/${userId}`;
     },

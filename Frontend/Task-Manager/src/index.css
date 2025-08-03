@@ -31,3 +31,9 @@
 .card-btn{
   @apply px-2 py-1 text-[12px] flex items-center text-white bg-indigo-600 rounded-md hover:bg-indigo-500 gap-2 cursor-pointer
 }
+.form-card{
+  @apply bg-white p-6 rounded-lg shadow-md shadow-gray-100 border border-gray-200/50
+}
+.form-input{
+  @apply w-full text-sm text-black outline-none bg-white border border-slate-200 px-2.5 py-3 rounded-md mt-2 placeholder:text-gray-500
+}

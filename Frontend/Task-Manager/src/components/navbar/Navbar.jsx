@@ -13,7 +13,7 @@ function Navbar({activeMenu}) {
             ):(<HiOutlineMenu className='text-2xl'/>)
         }
       </button>
-      <h2 className='text-lg font-medium text-black'>Expanse Tracker</h2>
+      <h2 className='text-lg font-medium text-black'>Task Manager</h2>
       {openSideMenu&&(
         <div className='flex top-[61px] -ml-4 bg-white'>
             <SideMenu activeMenu={activeMenu}/>

@@ -5,7 +5,7 @@ import { User } from "../models/user_model.js";
 import { Task } from "../models/task_model.js";
 
 const getMembers = asyncHandler(async(req, res) => {
-    const members = await User.find({role:"member"}).select("-password,-refreshToken, -accessTokens")
+    const members = await User.find({role:"member"}).select("-password -refreshToken -accessTokens")
     if(members.length==0){
         throw new apiError(404,"There is no any member")
     }
@@ -15,6 +15,7 @@ const getMembers = asyncHandler(async(req, res) => {
             const userWithProgressTask = await Task.countDocuments({assignTo:user._id,status:"In Progress"})
             const userWithCompletedTask = await Task.countDocuments({assignTo:user._id,status:"Completed"})
             return {
+                _Id:user._id,
                 profileImage:user.profileImageUrl,
                 name:user.name,
                 email:user.email,
