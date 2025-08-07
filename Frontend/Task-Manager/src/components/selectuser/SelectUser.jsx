@@ -39,7 +39,7 @@ function SelectUser({ selectedUsers, setSelectedUsers }) {
   };
 
   const handelAssign = () => {
-    setSelectedUsers(selectedUsers);
+    setSelectedUsers(tempSelectedUsers);
     setIsModelOpen(false);
   };
 
@@ -50,8 +50,9 @@ function SelectUser({ selectedUsers, setSelectedUsers }) {
 
   const selectedUserAvatars = allUsers
     .filter((user) => selectedUsers.includes(user._Id))
-    .map((user) => user.profileImage);
-
+    .map((user) => user?.profileImage||"");
+console.log("selecteduser",selectedUsers)
+console.log("avatars",selectedUserAvatars)
 
   useEffect(() => {
     getAllUsers();
