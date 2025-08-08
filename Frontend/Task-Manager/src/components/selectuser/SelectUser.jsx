@@ -6,16 +6,12 @@ import { Model } from "../layouts/Model";
 import AvatarGroup from "../avatargroup/AvatarGroup";
 function SelectUser({ selectedUsers, setSelectedUsers }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isModelOpen, setIsModelOpen] = useState(true);
+  const [isModelOpen, setIsModelOpen] = useState(false);
   const [tempSelectedUsers, setTempSelectedUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
   const checkBoxRef = useRef([]);
-
- 
   
-
-  // user fetching
   const getAllUsers = async () => {
     try {
       const response = await axiosInstances.get(API_PATHS.USER.GET_ALL_USER);
@@ -51,8 +47,6 @@ function SelectUser({ selectedUsers, setSelectedUsers }) {
   const selectedUserAvatars = allUsers
     .filter((user) => selectedUsers.includes(user._Id))
     .map((user) => user?.profileImage||"");
-console.log("selecteduser",selectedUsers)
-console.log("avatars",selectedUserAvatars)
 
   useEffect(() => {
     getAllUsers();

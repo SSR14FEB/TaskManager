@@ -22,6 +22,7 @@ function CreateTasks() {
     todoCheckList: [],
     attachments: [],
   });
+  console.log("todoData",taskData.todoCheckList)
   const [currentTask, setCurrentTask] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -134,13 +135,14 @@ function CreateTasks() {
                   }}
                 />
               </div>
-              <div className="mt-3 col-span-6 md:col-span-4">
+              <div className="mt-3 col-span-6 md:col-span-12">
                     <label className="text-xs font-medium text-slate-600">
                       Todo Checklist
                     </label>
                     <TodoList
                     todoChecklist={taskData.todoCheckList}
                     setTodoChecklist={(value)=>{
+                      console.log("todochecklist",value)
                       handleValueChange("todoCheckList",value)
                     }}
                     />
