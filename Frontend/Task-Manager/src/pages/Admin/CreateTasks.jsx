@@ -24,6 +24,7 @@ function CreateTasks() {
     todoCheckList: [],
     attachments: [],
   });
+  console.log("Task",taskData)
   const [currentTask, setCurrentTask] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,9 @@ function CreateTasks() {
       attachments: [],
     });
   };
-  const createTask = () => {};
+  const createTask = () => {
+    
+  };
   const uploadTask = () => {};
   const handeleSubmit = async () => {};
 
@@ -125,7 +128,7 @@ function CreateTasks() {
                   type="date"
                 />
               </div>
-              <div className="col-span-6 md:col-span-4">
+              <div className="col-span-12 md:col-span-4">
                 <label className="text-xs font-medium text-slate-600">
                   Assign To
                 </label>
@@ -135,6 +138,7 @@ function CreateTasks() {
                     handleValueChange("assignTo", value);
                   }}
                 />
+              </div>
               </div>
               <div className="mt-3 col-span-6 md:col-span-12">
                 <label className="text-xs font-medium text-slate-600">
@@ -162,7 +166,9 @@ function CreateTasks() {
                   icon={<MdAttachFile />}
                 />
               </div>
-            </div>
+              <button className="w-full py-2 mt-3 text-sm font-medium col-span-6 md:col-span-12 text-indigo-600 bg-neutral-50 hover:bg-neutral-100 border border-slate-200/50 rounded-md">
+                    CREATE TASK
+              </button>
           </div>
         </div>
       </div>

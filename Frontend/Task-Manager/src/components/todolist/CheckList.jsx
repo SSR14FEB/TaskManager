@@ -10,7 +10,6 @@ function CheckList({ CheckList, setCheckList, placeholder, icon }) {
   };
 
   const removeTask = (id) => {
-    console.log("id", id);
     setTask((prev) => prev.filter((task) => task.id != id));
     setCheckList(task);
   };
