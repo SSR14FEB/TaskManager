@@ -9,7 +9,9 @@ import moment from "moment";
 import { LuTrash } from "react-icons/lu";
 import { SelectDropDown } from "../../components/dropdown/SelectDropDown";
 import { SelectUser } from "../../components/SelectUser/SelectUser";
-import TodoList from "../../components/todolist/TodoList";
+import { CheckList } from "../../components/todolist/CheckList";
+import Attachments from "../../components/attachments/Attachments";
+import { MdAttachFile } from "react-icons/md";
 function CreateTasks() {
   const location = useLocation();
   const { taskId } = location.state || "";
@@ -22,7 +24,6 @@ function CreateTasks() {
     todoCheckList: [],
     attachments: [],
   });
-  console.log("todoData",taskData.todoCheckList)
   const [currentTask, setCurrentTask] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -136,16 +137,30 @@ function CreateTasks() {
                 />
               </div>
               <div className="mt-3 col-span-6 md:col-span-12">
-                    <label className="text-xs font-medium text-slate-600">
-                      Todo Checklist
-                    </label>
-                    <TodoList
-                    todoChecklist={taskData.todoCheckList}
-                    setTodoChecklist={(value)=>{
-                      console.log("todochecklist",value)
-                      handleValueChange("todoCheckList",value)
-                    }}
-                    />
+                <label className="text-xs font-medium text-slate-600">
+                  Todo Checklist
+                </label>
+                <CheckList
+                  CheckList={taskData.todoCheckList}
+                  setCheckList={(value) => {
+                    handleValueChange("todoCheckList", value);
+                  }}
+                  placeholder="Add Task"
+                  icon=""
+                />
+              </div>
+              <div className="mt-3 col-span-6 md:col-span-12">
+                <label className="text-xs font-medium text-slate-600">
+                  Add Attachments
+                </label>
+                <CheckList
+                  CheckList={taskData.attachments}
+                  setCheckList={(value) => {
+                    handleValueChange("attachments", value);
+                  }}
+                  placeholder="Add File Links"
+                  icon={<MdAttachFile />}
+                />
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import uniqid from "uniqid";
 import React, { useState } from "react";
 
-function AddTask({ value, placeholder, onClick, icon }) {
+function AddList({ value, placeholder, onClick, icon }) {
   const [input, setInputValue] = useState({
     id: "0",
     task: "",
@@ -17,6 +17,7 @@ function AddTask({ value, placeholder, onClick, icon }) {
       <input
         className="w-full text-[13px] text-black outline-none bg-white border border-slate-200 px-2.5 py-3 rounded-md placeholder:text-gray-500"
         value={input.task}
+        type="text"
         placeholder={placeholder}
         onChange={(e) => {
           setInputValue((prev) => ({
@@ -36,4 +37,4 @@ function AddTask({ value, placeholder, onClick, icon }) {
   );
 }
 
-export default AddTask;
+export default AddList;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { HiMiniPlus, HiOutlineTrash } from "react-icons/hi2";
 import Input from "../input/Input";
-import AddTask from "./AddTask";
-function TodoList({ todoChecklist, setTodoChecklist }) {
+import AddList from "./AddList";
+function CheckList({ CheckList, setCheckList, placeholder, icon }) {
   const [task, setTask] = useState([]);
 
   const addTask = (value) => {
@@ -12,11 +12,11 @@ function TodoList({ todoChecklist, setTodoChecklist }) {
   const removeTask = (id) => {
     console.log("id", id);
     setTask((prev) => prev.filter((task) => task.id != id));
-    setTodoChecklist(task);
+    setCheckList(task);
   };
 
   useEffect(()=>{
-    setTodoChecklist(task)
+    setCheckList(task)
     return () => {};
   },[task])
  
@@ -24,13 +24,13 @@ function TodoList({ todoChecklist, setTodoChecklist }) {
   return (
     <div className="w-full">
       {task &&
-        todoChecklist.map((task, index) => (
+        CheckList.map((task, index) => (
           <div
             key={task.id}
             className="w-full flex mt-3 mb-3 justify-between px-2.5 py-2 border border-slate-200 rounded-md "
           >
-            <div className="flex gap-2">
-            <div className="text-sm font-medium text-indigo-400">{index+1}</div>
+            <div className="flex gap-2 items-center">
+            <div className="text-sm font-medium text-indigo-400">{icon?icon:index+1}</div>
             <div className="text-sm font-medium text-gray-900">{task.task}</div>
             </div>
             <HiOutlineTrash
@@ -39,9 +39,9 @@ function TodoList({ todoChecklist, setTodoChecklist }) {
             />
           </div>
         ))}
-      <AddTask
+      <AddList
         value={task}
-        placeholder="Add Task"
+        placeholder={placeholder}
         onClick={(value) => {
           addTask(value);
         }}
@@ -51,4 +51,4 @@ function TodoList({ todoChecklist, setTodoChecklist }) {
   );
 }
 
-export default TodoList;
+export  {CheckList};
