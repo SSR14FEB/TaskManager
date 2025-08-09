@@ -171,12 +171,10 @@ const createTask = asyncHandler(async (req, res) => {
         title,
         description,
         createdBy,
-        assignTo,
         todoCheckList,
         dueDate,
+        assignTo,
         priority,
-        status,
-        progress,
         attachments,
     } = req.body;
 
@@ -187,14 +185,12 @@ const createTask = asyncHandler(async (req, res) => {
             createdBy,
             dueDate,
             priority,
-            status,
-            progress,
         ].some((field) => field?.trim() == "")
     ) {
         throw new apiError(400, "All fields are required");
     }
 
-    if (!Array.isArray(assignTo)&&assignTo.length>0) {
+    if (!Array.isArray(assignTo)) {
         throw new apiError(400, "assignTo must be an array");
     }
     const createdTask = await Task.create({
@@ -205,8 +201,6 @@ const createTask = asyncHandler(async (req, res) => {
         todoCheckList: todoCheckList,
         dueDate: dueDate,
         Priority: priority,
-        status: status,
-        Progress: progress,
         attachments: attachments,
     });
 

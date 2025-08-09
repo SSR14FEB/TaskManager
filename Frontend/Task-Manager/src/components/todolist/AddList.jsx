@@ -4,25 +4,25 @@ import React, { useState } from "react";
 function AddList({ value, placeholder, onClick, icon }) {
   const [input, setInputValue] = useState({
     id: "0",
-    task: "",
+    text: "",
   });
-  const handelAdd =()=>{
-    if(input.task.trim()!=""){
-      onClick(input)
+  const handelAdd = () => {
+    if (input.text.trim() != "") {
+      onClick(input);
     }
-    setInputValue((prev)=>({...prev,task:""}))
-  }
+    setInputValue((prev) => ({ ...prev, text: "" }));
+  };
   return (
     <div className="flex justify-center gap-5 items-center ">
       <input
         className="w-full text-[13px] text-black outline-none bg-white border border-slate-200 px-2.5 py-3 rounded-md placeholder:text-gray-500"
-        value={input.task}
+        value={input.text}
         type="text"
         placeholder={placeholder}
         onChange={(e) => {
           setInputValue((prev) => ({
             ...prev,
-            task: e.target.value,
+            text: e.target.value,
             id: uniqid(),
           }));
         }}

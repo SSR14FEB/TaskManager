@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { axiosInstances } from "../../utils/axiosInstances";
 import { API_PATHS } from "../../utils/apiPath";
 import { PRIORITY_DATA } from "../../utils/data";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Form, useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { LuTrash } from "react-icons/lu";
 import { SelectDropDown } from "../../components/dropdown/SelectDropDown";
@@ -24,7 +24,6 @@ function CreateTasks() {
     todoCheckList: [],
     attachments: [],
   });
-  console.log("Task",taskData)
   const [currentTask, setCurrentTask] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,11 +43,83 @@ function CreateTasks() {
       attachments: [],
     });
   };
-  const createTask = () => {
-    
+
+  const createTask = async () => {
+    setLoading(true);
+
+    taskData.todoCheckList.forEach((task) => (task.completed = false));
+    taskData.todoCheckList.forEach((item) => {
+      Reflect.deleteProperty(item, "id");
+    });
+    taskData.attachments.forEach((item) => {
+      Reflect.deleteProperty(item, "id");
+    });
+    try {
+      const response = await axiosInstances.post(API_PATHS.TASK.CREATE_TASK, {
+        ...taskData,
+        dueDate: new Date(taskData.dueDate).toISOString(),
+      });
+      if (response) {
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(
+        "Error 500 something went wrong while creating task",
+        error.response
+      );
+    }
   };
   const uploadTask = () => {};
-  const handeleSubmit = async () => {};
+  console.log(taskData);
+  const handelSubmit = async () => {
+    setError(null);
+    if (taskData.title.trim() == "") {
+      setError("Title is required");
+      return;
+    }
+    if (taskData.description.trim() == "") {
+      setError("Description is required");
+      return;
+    }
+    if (taskData.priority.trim() == "") {
+      setError("Priority is required");
+      return;
+    }
+    if (taskData.dueDate == null) {
+      setError("DueDate is required");
+      return;
+    }
+    if (taskData.description.trim() == "") {
+      setError("Description is required");
+      return;
+    }
+    if (taskData.assignTo.length == 0) {
+      setError("Members are not assigned");
+      return;
+    }
+    if (taskData.todoCheckList.length == 0) {
+      setError("Todo are required");
+      return;
+    }
+    if (taskData.attachments.length == 0) {
+      setError("Attachments are required");
+      return;
+    }
+
+    createTask();
+  };
+  //Reset error
+  useEffect(() => {
+    setError("");
+  }, [
+    taskData.title,
+    taskData.description,
+    taskData.priority,
+    taskData.dueDate,
+    taskData.assignTo,
+    taskData.todoCheckList,
+    taskData.attachments,
+  ]);
 
   // get info by task id
 
@@ -139,36 +210,42 @@ function CreateTasks() {
                   }}
                 />
               </div>
-              </div>
-              <div className="mt-3 col-span-6 md:col-span-12">
-                <label className="text-xs font-medium text-slate-600">
-                  Todo Checklist
-                </label>
-                <CheckList
-                  CheckList={taskData.todoCheckList}
-                  setCheckList={(value) => {
-                    handleValueChange("todoCheckList", value);
-                  }}
-                  placeholder="Add Task"
-                  icon=""
-                />
-              </div>
-              <div className="mt-3 col-span-6 md:col-span-12">
-                <label className="text-xs font-medium text-slate-600">
-                  Add Attachments
-                </label>
-                <CheckList
-                  CheckList={taskData.attachments}
-                  setCheckList={(value) => {
-                    handleValueChange("attachments", value);
-                  }}
-                  placeholder="Add File Links"
-                  icon={<MdAttachFile />}
-                />
-              </div>
-              <button className="w-full py-2 mt-3 text-sm font-medium col-span-6 md:col-span-12 text-indigo-600 bg-neutral-50 hover:bg-neutral-100 border border-slate-200/50 rounded-md">
-                    CREATE TASK
-              </button>
+            </div>
+            <div className="mt-3 col-span-6 md:col-span-12">
+              <label className="text-xs font-medium text-slate-600">
+                Todo Checklist
+              </label>
+              <CheckList
+                CheckList={taskData.todoCheckList}
+                setCheckList={(value) => {
+                  handleValueChange("todoCheckList", value);
+                }}
+                placeholder="Add Task"
+                icon=""
+              />
+            </div>
+            <div className="mt-3 col-span-6 md:col-span-12">
+              <label className="text-xs font-medium text-slate-600">
+                Add Attachments
+              </label>
+              <CheckList
+                CheckList={taskData.attachments}
+                setCheckList={(value) => {
+                  handleValueChange("attachments", value);
+                }}
+                placeholder="Add File Links"
+                icon={<MdAttachFile />}
+              />
+            </div>
+            <div className="mt-3 col-span-6 md:col-span-12 text-rose-600 text-sm font-medium ">
+              {error}
+            </div>
+            <button
+              className="w-full py-2 mt-3 text-sm font-medium col-span-6 md:col-span-12 text-indigo-600 bg-neutral-50 hover:bg-neutral-100 border border-slate-100/20 rounded-md"
+              onClick={handelSubmit}
+            >
+              CREATE TASK
+            </button>
           </div>
         </div>
       </div>

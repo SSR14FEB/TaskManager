@@ -30,7 +30,7 @@ function CheckList({ CheckList, setCheckList, placeholder, icon }) {
           >
             <div className="flex gap-2 items-center">
             <div className="text-sm font-medium text-indigo-400">{icon?icon:index+1}</div>
-            <div className="text-sm font-medium text-gray-900">{task.task}</div>
+            <div className="text-sm font-medium text-gray-900">{task.text}</div>
             </div>
             <HiOutlineTrash
               className="text-red-600"
