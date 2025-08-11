@@ -53,11 +53,10 @@ const adminDashboard = asyncHandler(async (req, res) => {
     const taskPriority = taskPriorityLevel.reduce((acc, priority) => {
         const formattedKey = priority.replace(/\s+/g, "");
         acc[formattedKey] =
-        taskPriorityRow.find((item) =>item._id==priority)?.count ||
-            0;
+            taskPriorityRow.find((item) => item._id == priority)?.count || 0;
         return acc;
     }, {});
- 
+
     const recentTask = await Task.find()
         .sort({ createdAt: -1 })
         .select("title status priority dueDate createdAt");
@@ -106,9 +105,9 @@ const userDashboard = asyncHandler(async (req, res) => {
 
     const taskDistributionRow = await Task.aggregate([
         {
-            $match:{
-                assignTo:user._id
-            }
+            $match: {
+                assignTo: user._id,
+            },
         },
         {
             $group: {
@@ -179,13 +178,9 @@ const createTask = asyncHandler(async (req, res) => {
     } = req.body;
 
     if (
-        [
-            title,
-            description,
-            createdBy,
-            dueDate,
-            priority,
-        ].some((field) => field?.trim() == "")
+        [title, description, createdBy, dueDate, priority].some(
+            (field) => field?.trim() == ""
+        )
     ) {
         throw new apiError(400, "All fields are required");
     }
@@ -205,8 +200,8 @@ const createTask = asyncHandler(async (req, res) => {
     });
 
     return res
-        .status(202)
-        .json(new apiResponse(202, "Task created successfully", createdTask));
+        .status(201)
+        .json(new apiResponse(201, "Task created successfully", createdTask));
 });
 
 const getTask = asyncHandler(async (req, res) => {
@@ -318,74 +313,79 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {
-    const task = await Task.findById(req.params._id)
-    if(!task){
-        throw new apiError(404,"Task not found")
+    const task = await Task.findById(req.params._id);
+    if (!task) {
+        throw new apiError(404, "Task not found");
     }
 
-    const user = await User.findById(req.user._id)
-    if(!user){
-        throw new apiError(404,"User not found")
-    }
-    
-    const isAssigned = task.assignTo.some((userId)=>userId.toString() == user._id.toString())
-
-    if(!isAssigned && user.role!="admin"){
-        throw new apiError(403,"User is unauthorized to update task")
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        throw new apiError(404, "User not found");
     }
 
-    task.status = req.body.status||task.status
+    const isAssigned = task.assignTo.some(
+        (userId) => userId.toString() == user._id.toString()
+    );
 
-    if(task.status=="Completed"){
-        task.todoCheckList.filter((task)=>task.completed=="true")
-        task.progress = 100
+    if (!isAssigned && user.role != "admin") {
+        throw new apiError(403, "User is unauthorized to update task");
     }
 
-    return res.status(200)
-    .json(new apiResponse(200,"Task status updated",{
-        task
-    }))
+    task.status = req.body.status || task.status;
 
+    if (task.status == "Completed") {
+        task.todoCheckList.filter((task) => task.completed == "true");
+        task.progress = 100;
+    }
 
+    return res.status(200).json(
+        new apiResponse(200, "Task status updated", {
+            task,
+        })
+    );
 });
 
 const updateTaskTodo = asyncHandler(async (req, res) => {
-    const task = await Task.findById(req.params._id)
-    const todoCheckList = req.body
-    if(!task){
-        throw new apiError(404,"Task not found")
+    const task = await Task.findById(req.params._id);
+    const todoCheckList = req.body;
+    if (!task) {
+        throw new apiError(404, "Task not found");
     }
-    const user = await User.findById(req.user._id)
-    if(!user){
-        throw new apiError(404,"User not found")
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        throw new apiError(404, "User not found");
     }
 
-    if(task.assignTo.include(user._id)&&user.role!="admin"){
-        throw new apiError(403,"User is unauthorized to update check list")
+    if (task.assignTo.include(user._id) && user.role != "admin") {
+        throw new apiError(403, "User is unauthorized to update check list");
     }
-    task.todoCheckList = todoCheckList
+    task.todoCheckList = todoCheckList;
     // Auto update-progress based on checklist
 
-    const completedItem = task.todoCheckList.filter((item)=>item.completed).length
+    const completedItem = task.todoCheckList.filter(
+        (item) => item.completed
+    ).length;
 
-    const totalItem = task.todoCheckList.length
-    task.progress = totalItem>0? Math.round((completedTask/totalItem)*100):0
-    if(task.progress==100){
-        task.status="Completed"
-    }else if(task.progress>0 && task.progress<100){
-        task.status = "In Progress"
-    }else{
-        task.status = "Pending"
+    const totalItem = task.todoCheckList.length;
+    task.progress =
+        totalItem > 0 ? Math.round((completedTask / totalItem) * 100) : 0;
+    if (task.progress == 100) {
+        task.status = "Completed";
+    } else if (task.progress > 0 && task.progress < 100) {
+        task.status = "In Progress";
+    } else {
+        task.status = "Pending";
     }
-    await task.save({validateBeforeSave:true})
+    await task.save({ validateBeforeSave: true });
     const updatedTask = await Task.findById(req.params._id).populate(
         "assignedTo",
         "name email profileImageUrl"
-    )
-    return res.status(200)
-    .json(new apiResponse(200,"Task checklist successfully updated",{
-        task:updateTask
-    }))
+    );
+    return res.status(200).json(
+        new apiResponse(200, "Task checklist successfully updated", {
+            task: updateTask,
+        })
+    );
 });
 
 export {

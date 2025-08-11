@@ -59,8 +59,9 @@ function CreateTasks() {
         ...taskData,
         dueDate: new Date(taskData.dueDate).toISOString(),
       });
-      if (response) {
-        console.log(response);
+      if (response.status == 201) {
+        toast.success("TASK CREATED SUCCESSFULLY");
+        clearData();
       }
     } catch (error) {
       console.log(
@@ -69,9 +70,8 @@ function CreateTasks() {
       );
     }
   };
-  const uploadTask = () => {};
-  console.log(taskData);
-  const handelSubmit = async () => {
+   const uploadTask = () => {};
+   const handelSubmit = async () => {
     setError(null);
     if (taskData.title.trim() == "") {
       setError("Title is required");
