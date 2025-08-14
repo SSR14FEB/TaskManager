@@ -40,6 +40,7 @@ axiosInstances.interceptors.response.use(
   }
 );
 
+
 export const axiosInstancesOfForm = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,

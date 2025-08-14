@@ -42,9 +42,11 @@ const register = asyncHandler(async (req, res) => {
     }
     // image upload on cloud using middle ware
     let localFilePath;
+
     if (req.file && req.file?.path) {
         localFilePath = profileImage;
     }
+
     const profilePicture = await uploadOnCloudinary(localFilePath);
     // populating user schema in to database
     const user = await User.create({
@@ -110,15 +112,19 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const profile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id).select(
-        "-password, -refreshToken"
-    );
-    if (!user) {
-        throw new apiError(404, "User not found");
-    }
-    return res
-        .status(200)
-        .json(new apiResponse(200, "User profile fetched successfully", user));
+   try {
+     const user = await User.findById(req.user._id).select(
+         "-password, -refreshToken"
+     );
+     if (!user) {
+         throw new apiError(404, "User not found");
+     }
+     return res
+         .status(200)
+         .json(new apiResponse(200, "User profile fetched successfully", user));
+   } catch (error) {
+    
+   }
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
