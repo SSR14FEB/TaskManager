@@ -7,7 +7,7 @@ const authentication = asyncHandler(async (req, _, next) => {
   try {
       const token =
           req.cookies?.accessToken ||
-          req.header("Authorization").replace("Bearer", "");
+          req.header("Authorization")?.replace("Bearer", "");
       if (!token) {
           throw new apiError(401, "Unauthorized request");
       }

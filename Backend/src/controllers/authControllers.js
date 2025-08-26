@@ -114,7 +114,7 @@ const logout = asyncHandler(async (req, res) => {
 const profile = asyncHandler(async (req, res) => {
    try {
      const user = await User.findById(req.user._id).select(
-         "-password, -refreshToken"
+         "-password -refreshToken"
      );
      if (!user) {
          throw new apiError(404, "User not found");
