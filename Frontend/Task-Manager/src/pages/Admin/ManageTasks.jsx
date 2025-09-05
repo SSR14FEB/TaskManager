@@ -21,7 +21,6 @@ function ManageTasks() {
         },
       });
       if (response) {
-        console.log(response?.data?.data);
         setAllTask(response?.data?.data?.tasks);
         const statusSummary = response?.data?.data.statusSummary || {};
 
@@ -66,33 +65,50 @@ function ManageTasks() {
       <div className="my-5">
         <div className="flex flex-col justify-between md:flex-row md:items-center">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl md:text-xl font-medium">My Task</h2>
-            <button className="flex lg:hidden download-btn" onClick={handelDownloadReport}>
-              <LuFileSpreadsheet className="text-[15px]"/>
+            <h2 className="text-xl font-medium md:text-xl">My Task</h2>
+            <button
+              className="download-btn flex lg:hidden"
+              onClick={handelDownloadReport}
+            >
+              <LuFileSpreadsheet className="text-[15px]" />
               Download Report
             </button>
           </div>
-          {
-            allTask.length>0&&(
-              <div className="flex items-center gap-3">
-                <TaskStatusBar
-                    tabs = {tabs}
-                    activeTabs ={filterStatus}
-                    setActiveTabs={setFilterStatus}
-               />
-              <button className="hidden lg:flex download-btn" onClick={handelDownloadReport}>
-              <LuFileSpreadsheet className="text-[15px]"/>
-              Download Report
-            </button>
+          {allTask.length > 0 && (
+            <div className="flex items-center gap-3">
+              <TaskStatusBar
+                tabs={tabs}
+                activeTabs={filterStatus}
+                setActiveTabs={setFilterStatus}
+              />
+              <button
+                className="download-btn hidden lg:flex"
+                onClick={handelDownloadReport}
+              >
+                <LuFileSpreadsheet className="text-[15px]" />
+                Download Report
+              </button>
             </div>
-            )
-          }
+          )}
         </div>
-        <div className="">
-          {allTask.map((task,index)=>(
-           <TaskCard>
-
-           </TaskCard>
+        <div className=" mt-5  grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {allTask.map((task, index) => (
+            <TaskCard
+              key={task.index}
+              title={task?.title||""}
+              description={task?.description||""}
+              priority={task?.priority||""}
+              status={task?.status||""}
+              progress={task?.progress||""}
+              createdAt={task?.createdAt||""}
+              dueDate={task?.dueDate||""}
+              assignedTo={task?.assignTo.map(
+                (member) => member?.profileImageUrl
+              )||[]}
+              todoCheckList={task?.todoCheckList||""}
+              todoCompleted={task?.completedTodoCount||""}
+              attachments = {task?.attachments||""}
+            />
           ))}
         </div>
       </div>

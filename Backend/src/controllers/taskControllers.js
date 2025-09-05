@@ -362,10 +362,10 @@ const updateTaskTodo = asyncHandler(async (req, res) => {
     task.todoCheckList = todoCheckList;
     // Auto update-progress based on checklist
 
-    const completedItem = task.todoCheckList.filter(
+    const completedTask = task.todoCheckList.filter(
         (item) => item.completed
     ).length;
-
+    
     const totalItem = task.todoCheckList.length;
     task.progress =
         totalItem > 0 ? Math.round((completedTask / totalItem) * 100) : 0;
