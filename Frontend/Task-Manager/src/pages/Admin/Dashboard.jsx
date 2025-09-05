@@ -22,19 +22,8 @@ function Dashboard() {
   const [barChartData, setBarChartData] = useState([]);
   const COLORS = ["#8D51FF","#00B8DB","#7BCE00"]
 
-  const getDashBoardData = async () => {
-    try {
-      const response = await axiosInstances(
-        API_PATHS.TASK.ADMIN_DASHBOARD_DATA
-      );
-      if (response) {
-        setDashBoardData(response?.data);
-        prepareChartData(response?.data?.data||null);
-      }
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
+ 
+
 
   // prepare chart data
   const prepareChartData = (data) => {
@@ -54,6 +43,19 @@ function Dashboard() {
     setBarChartData(taskPriorityLevelData)
   };
   useEffect(() => {
+     const getDashBoardData = async () => {
+      try {
+        const response = await axiosInstances(
+          API_PATHS.TASK.ADMIN_DASHBOARD_DATA
+        );
+        if (response) {
+          setDashBoardData(response?.data);
+          prepareChartData(response?.data?.data||null);
+        }
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    };
     getDashBoardData();
   }, []);
 
@@ -61,7 +63,6 @@ function Dashboard() {
   const onSeeMore = () => {
     navigate("/admin/task");
   };
-  console.log(dashBoardData);
   return (
     <DashboardLayout activeMenu="Dashboard">
       <div className="card my-5">
@@ -88,7 +89,7 @@ function Dashboard() {
             label="Pending Task"
             color="bg-violet-500"
             value={addThousandsSeparator(
-              dashBoardData?.data?.taskDistribution?.pendingTask || 0
+              dashBoardData?.data?.taskDistribution?.Pending || 0
             )}
           />
           <InfoCard
@@ -102,7 +103,7 @@ function Dashboard() {
             label="Completed Task"
             color="bg-lime-600"
             value={addThousandsSeparator(
-              dashBoardData?.charts?.taskDistribution?.Completed || 0
+              dashBoardData?.data?.taskDistribution?.Completed|| 0
             )}
           />
         </div>

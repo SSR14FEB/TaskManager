@@ -8,7 +8,7 @@ function TaskStatusBar({ tabs, activeTabs, setActiveTabs }) {
     console.log(activeIndex);
     if (buttonRef.current[activeIndex]) {
       const el = buttonRef.current[activeIndex];
-      setUnderline({ x: el.offsetLeft, width: el.offsetWidth - 40 });
+      setUnderline({ x: el.offsetLeft, width: el.offsetWidth -40 });
     }
   }, [activeTabs, tabs]);
   return (

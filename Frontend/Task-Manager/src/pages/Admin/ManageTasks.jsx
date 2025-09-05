@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstances } from "../../utils/axiosInstances";
 import { API_PATHS } from "../../utils/apiPath";
 import TaskStatusBar from "../../components/layouts/TaskStatusBar";
+import { TaskCard } from "../../components/card/TaskCard";
 import { LuFileSpreadsheet } from "react-icons/lu";
 function ManageTasks() {
   const [allTask, setAllTask] = useState([]);
@@ -83,9 +84,16 @@ function ManageTasks() {
               <LuFileSpreadsheet className="text-[15px]"/>
               Download Report
             </button>
-              </div>
+            </div>
             )
           }
+        </div>
+        <div className="">
+          {allTask.map((task,index)=>(
+           <TaskCard>
+
+           </TaskCard>
+          ))}
         </div>
       </div>
     </DashboardLayout>
